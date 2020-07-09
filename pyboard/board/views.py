@@ -68,20 +68,24 @@ def detail(request):
 
     print("filesize:",dto.filesize)
     #filesize = "%0.2f" % (dto.filesize / 1024)     1024로 나눠서 반올림한 값으로 표시해주기
-    filesize = "%0.2f" % (dto.filesize / 1024)
-    return render(request, "detail.html",{"dto":dto,"filesize":filesize, })
+    filesize = "%.2f"%(dto.filesize/1024)
+    return render(request, "detail.html",{ "dto":dto,"filesize":filesize, })
 
 
 # 수정하기
 @csrf_exempt
 def update(request):
-    id = request.POST["idx"] #글번호
+    #글번호
+    #id = request.POST["idx"]
+    id = request.POST["idx"]
 
     # select * from board_board where idx=id
     dto_src = Board.objects.get(idx=id)
     
     fname = dto_src.filename  # 기존 첨부파일 이름
     fsize = 0   # 기존 첨부파일 크기
+
+    
 
     if "file" in request.FILES:        # 새로운 첨부파일이 있으면
         file = request.FILES["file"]
@@ -94,9 +98,24 @@ def update(request):
             # 첨부파일 크기 ( 업로드 완료 후 계산
             fsize = os.path.getsize(UPLOAD_DIR+fname)
 
-        # 수정 후 board의 내용
-        dto_new = Board(idx=id, writer=request.POST["writer"], title=request.POST["title"],
-                        content=request.POST["content"], filename=fname, filesize=fsize)
+            
 
-        dto_new.save()      # update query 호출
-        return redirect("/")        # 시작페이지로 이ddong
+        # 수정 후 board의 내용
+    dto_new = Board(idx=id, writer=request.POST["writer"], title=request.POST["title"],
+                    content=request.POST["content"], filename=fname, filesize=fsize)
+    dto_new.save()      # update query 호출
+        
+    return redirect("/")        # 시작페이지로 이ddong
+
+
+# 삭제하기
+@csrf_exempt
+def delete(request):
+    #삭제할 게시글 번호
+    id = request.POST["idx"]
+
+    #레코드 삭제
+    Board.objects.get(idx=id).delete()
+
+    return redirect("/")
+    

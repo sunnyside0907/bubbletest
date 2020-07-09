@@ -25,4 +25,5 @@ urlpatterns = [
     path('download',views.download),
     path('detail',views.detail),
     path('update',views.update),
+    path('delete',views.delete),
 ]
