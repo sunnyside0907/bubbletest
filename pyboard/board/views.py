@@ -1,10 +1,12 @@
 import os
 
 from django.http.response import HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.utils.http import urlquote
 from django.views.decorators.csrf import csrf_exempt
-from board.models import Board
+from board.models import Board, Comment
+
 
 UPLOAD_DIR = "C:/upload/" # upload 폴더
 
@@ -66,17 +68,19 @@ def detail(request):
     dto.hit_up()
     dto.save()
 
+    commentList = Comment.objects.filter(board_idx = id).order_by("idx")
+
     print("filesize:",dto.filesize)
     #filesize = "%0.2f" % (dto.filesize / 1024)     1024로 나눠서 반올림한 값으로 표시해주기
     filesize = "%.2f"%(dto.filesize/1024)
-    return render(request, "detail.html",{ "dto":dto,"filesize":filesize, })
+    return render(request, "detail.html",{ "dto":dto,"filesize":filesize, "commentList":commentList })
 
 
 # 수정하기
 @csrf_exempt
 def update(request):
     #글번호
-    #id = request.POST["idx"]
+    #id = request.POST["idx"]               # 이건 에러뜨고 아래꺼는 ㄱㅊ...
     id = request.POST.get('idx',False)
 
     # select * from board_board where idx=id
@@ -119,3 +123,17 @@ def delete(request):
 
     return redirect("/")
     
+
+# 댓글쓰기
+@csrf_exempt
+def reply_insert(request):
+    id = request.POST['idx']
+
+    # 댓글 객체 생성
+    dto = Comment(board_idx=id, writer=request.POST["writer"],content=request.POST["content"])
+
+    # insert query 실행
+    dto.save()
+
+    # detai?idx=글번호 페이지로 이동
+    return HttpResponseRedirect("detail?idx="+id)
