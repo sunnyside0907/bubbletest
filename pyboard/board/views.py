@@ -10,7 +10,7 @@ from board.models import Board, Comment     #model.py에 있는 테이블 사용
 from django.db.models import Q              #Q()| 사용
 
 
-UPLOAD_DIR = "C:/upload/" # upload 폴더
+UPLOAD_DIR = "C:/upload/" # upload 폴더정보
 
 # Create your views here.
 
