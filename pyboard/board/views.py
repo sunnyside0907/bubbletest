@@ -176,8 +176,6 @@ def update(request):
             # 첨부파일 크기 ( 업로드 완료 후 계산
             fsize = os.path.getsize(UPLOAD_DIR+fname)
 
-             
-
         # 수정 후 board의 내용
     dto_new = Board(idx=id, writer=request.POST["writer"], title=request.POST["title"],
                     content=request.POST["content"], filename=fname, filesize=fsize,hit=hitnum )
