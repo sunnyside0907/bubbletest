@@ -157,8 +157,9 @@ def update(request):
 
     # select * from board_board where idx=id
     dto_src = Board.objects.get(idx=id)
-
     dto_src.save()
+
+    hitnum = dto_src.hit
     
     fname = dto_src.filename  # 기존 첨부파일 이름
     fsize = dto_src.filesize   # 기존 첨부파일 크기
@@ -179,7 +180,7 @@ def update(request):
 
         # 수정 후 board의 내용
     dto_new = Board(idx=id, writer=request.POST["writer"], title=request.POST["title"],
-                    content=request.POST["content"], filename=fname, filesize=fsize )
+                    content=request.POST["content"], filename=fname, filesize=fsize,hit=hitnum )
     dto_new.save()      # update query 호출
         
     return redirect("/")        # 시작페이지로 이ddong
