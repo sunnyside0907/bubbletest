@@ -1,4 +1,5 @@
 import os
+import math
 
 from django.http.response import HttpResponse
 from django.http import HttpResponseRedirect
@@ -14,9 +15,83 @@ UPLOAD_DIR = "C:/upload/" # upload 폴더
 
 # 글 읽기 페이지 작성
 def list(request):
-    boardCount = Board.objects.count()
-    boardList = Board.objects.all().order_by("-idx")
-    return render(request, "list.html", {"boardList":boardList, "boardCount":boardCount})
+    try:
+        search_option = request.POST["search_option"]
+    except:
+        search_option = ""
+    try:
+        search = request.POST["search"]
+    except:
+        search=""
+
+    if search_option == "all":
+        boardCount = Board.objects.filter(
+            Q(writer__contains = search) | Q(title__contains = search) | Q(content__contains = search)
+            ).count()
+    elif search_option == "writer":
+        boardCount = Board.objects.filter(writer__contains = search).count()
+    elif search_option == "title":
+        boardCount = Board.objects.filter(title__contains = search).count()
+    elif search_option == "contetn":
+        boardCount = Board.objects.filter(content__contains = search).count()
+    else:
+        boardCount = Board.objects.all().count()
+
+    try:
+        start = int(request.GET['start'])
+    except:
+        start = 0
+
+    page_size = 10
+    block_size =10
+    end = start+page_size
+    total_page = math.ceil(boardCount/page_size)
+    current_page = math.ceil((start+1)/page_size)
+    start_page = math.floor((current_page-1)/block_size)*block_size+1
+    end_page = start_page+block_size-1
+
+    if total_page < end_page:
+        end_page = total_page
+    if start_page >= block_size:
+        prev_list =(start_page-2)*page_size
+    else:
+        prev_list = 0
+    if end_page < total_page:
+        next_list = end_page*page_size
+    else:
+        next_list = 0
+
+    if search_option == "all":
+        boardList = Board.objects.filter(
+            Q(writer__contains=search)|Q(title__contains=search)|Q(content__contains)
+            ).order_by('-idx')[start:end]
+    elif search_option == "writer":
+        boardList = Board.objects.filter(writer__contains = search).order_by('-idx')[start:end]
+    elif search_option == "title":
+        boardList = Board.objects.filter(title__contains = search).order_by('-idx')[start:end]
+    elif search_option == "content":
+        boardList = Board.objects.filter(content__contains = search).order_by('-idx')[start:end]
+    else:
+        boardList = Board.objects.all().order_by('-idx')[start:end]
+
+    links=[]
+    for i in range(start_page, end_page+1):
+        page_start = (i-1)*page_size
+        links.append("<a href='?start="+str(page_start)+"'>"+str(i)+"</a>")
+
+    return render(request, "list.html",
+                  {"boardList":boardList, "boardCount":boardCount, "search_option":search_option, "search":search,
+                   "range":range(start_page-1,end_page),"start_page":start_page,"end_page":end_page,
+                   "block_size":block_size, "total_page":total_page, "prev_list":prev_list,"next_list":next_list,
+                   "link":links,
+                   }
+                  )
+#fileter 는 where Q() 는 %% like 검색
+  
+ #   boardCount = Board.objects.count()
+ #   boardList = Board.objects.all().order_by("-idx")
+    
+ #   return render(request, "list.html", {"boardList":boardList, "boardCount":boardCount})
 
 
 # 글쓰기 페이지 작성
