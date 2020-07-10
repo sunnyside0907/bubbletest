@@ -77,7 +77,7 @@ def detail(request):
 def update(request):
     #글번호
     #id = request.POST["idx"]
-    id = request.POST["idx"]
+    id = request.POST.get('idx',False)
 
     # select * from board_board where idx=id
     dto_src = Board.objects.get(idx=id)
