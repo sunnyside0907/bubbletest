@@ -6,7 +6,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.utils.http import urlquote
 from django.views.decorators.csrf import csrf_exempt
-from board.models import Board, Comment
+from board.models import Board, Comment     #model.py에 있는 테이블 사용
+from django.db.models import Q              #Q()| 사용
 
 
 UPLOAD_DIR = "C:/upload/" # upload 폴더
@@ -63,7 +64,7 @@ def list(request):
 
     if search_option == "all":
         boardList = Board.objects.filter(
-            Q(writer__contains=search)|Q(title__contains=search)|Q(content__contains)
+            Q(writer__contains=search) | Q(title__contains=search) | Q(content__contains=search)
             ).order_by('-idx')[start:end]
     elif search_option == "writer":
         boardList = Board.objects.filter(writer__contains = search).order_by('-idx')[start:end]
@@ -88,11 +89,6 @@ def list(request):
                   )
 #fileter 는 where Q() 는 %% like 검색
   
- #   boardCount = Board.objects.count()
- #   boardList = Board.objects.all().order_by("-idx")
-    
- #   return render(request, "list.html", {"boardList":boardList, "boardCount":boardCount})
-
 
 # 글쓰기 페이지 작성
 def write(request):
@@ -154,6 +150,7 @@ def detail(request):
 # 수정하기
 @csrf_exempt
 def update(request):
+    print("**")
     #글번호
     #id = request.POST["idx"]               # 이건 에러뜨고 아래꺼는 ㄱㅊ...
     id = request.POST.get('idx',False)
@@ -164,11 +161,10 @@ def update(request):
     fname = dto_src.filename  # 기존 첨부파일 이름
     fsize = 0   # 기존 첨부파일 크기
 
-    
-
     if "file" in request.FILES:        # 새로운 첨부파일이 있으면
         file = request.FILES["file"]
         fname = file.name           # 새로운 첨부파일 이름
+        fsize = file.size
         fp = open("%s%s" % (UPLOAD_DIR, fname), "wb")
         for chunk in file.chunks():
             fp.write(chunk)     # 파일 저장
