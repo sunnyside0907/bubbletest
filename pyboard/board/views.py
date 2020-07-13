@@ -142,6 +142,7 @@ def detail(request):
     commentList = Comment.objects.filter(board_idx = id).order_by("idx")
 
     print("filesize:",dto.filesize)
+
     #filesize = "%0.2f" % (dto.filesize / 1024)     1024로 나눠서 반올림한 값으로 표시해주기
     filesize = "%.2f"%(dto.filesize/1024)
     return render(request, "detail.html",{ "dto":dto,"filesize":filesize, "commentList":commentList })
@@ -159,7 +160,7 @@ def update(request):
     dto_src = Board.objects.get(idx=id)
     dto_src.save()
 
-    # 수정시 조회수, 다운로드 수 날라가는거 방
+    # 수정시 조회수, 다운로드 수 날라가는거 방지 
     hitnum = dto_src.hit
     downnum = dto_src.down
     
@@ -180,7 +181,7 @@ def update(request):
 
         # 수정 후 board의 내용
     dto_new = Board(idx=id, writer=request.POST["writer"], title=request.POST["title"],
-                    content=request.POST["content"], filename=fname, filesize=fsize,hit=hitnum,down=downnum )
+                    content=request.POST["content"], filename=fname, filesize=fsize, hit=hitnum, down=downnum )
     dto_new.save()      # update query 호출
         
     return redirect("/")        # 시작페이지로 이ddong
