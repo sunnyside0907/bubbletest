@@ -70,7 +70,7 @@ def list(request):
 
     # 페이지 네이션
     boardList = Board.objects.all().order_by("-idx")
-    paginator = Paginator(boardList,10)
+    paginator = Paginator(boardList,5)
     try:
         page = request.GET.get("page")
     except:
@@ -82,11 +82,17 @@ def list(request):
     except EmptyPage:
         boardList = paginator.page(paginator.num_pages)
 
+    contacts = paginator.get_page(page)
+    page_range = 5
+    current_block = math.ceil((start+1)/page_range)
+    start_block =  (current_block-1)*page_range
+    end_block = start_block + page_range
+    p_range = paginator.page_range[start_block:end_block]
 
     
     return render(request, "list.html",
                   {"boardList":boardList, "boardCount":boardCount, "search_option":search_option, "search":search,
-                                      
+                   "contact":contacts, 'p_range':p_range,
                    }
                   )
 #fileter  where Q() 는 %% like 검색

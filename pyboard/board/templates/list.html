@@ -69,44 +69,32 @@
 			</td>
 			<td>{{row.down}}</td>
 		{% endfor %}
+		{% endif %}
 		</tr>
 		<tr>
-			<td align="center" colspan="15" >
-			{% if boardList.paginator.num_pages > 1 %}
-				<div>
-				{% if boardList.has_previous %}	
-					<a href="?page={{lists.previous_page_number}}">◀</a>
-				{% endif %}
-			
-				&nbsp;&nbsp;{{boardList.number}}/{{boardList.paginator.num_pages}}&nbsp;&nbsp;
-			
-				{% if boardList.has_next %}	
-					<a href="?page={{boardList.next_page_number}}">▶</a>
-				{% endif %}
-				</div>
-			{% endif %}
-			</td>
+		 <td colspan="10" align="center">
+		  <div class="pagination">
+  			<span class="step-links">
+			        {% if contacts.has_previous %}
+   			         <a href="?page=1">&laquo; first</a>
+    			         <a href="?page={{ contacts.previous_page_number }}">previous</a>
+  			        {% endif %}
+
+      			        {% for i in p_range %}
+           			        <a href="?page={{i}}" {% if contacts.number == i %}class="active" {% endif %}>{{i}}</a>
+       			        {% endfor %}
+
+       			        {% if contacts.has_next %}
+            		        <a href="?page={{ contacts.next_page_number }}">next</a>
+        			        <a href="?page={{ contacts.paginator.num_pages }}">last &raquo;</a>
+      			        {% endif %}
+ 			   </span>
+	 	 </div>
+		</td>
 		</tr>
-		{% else %}
-			<tr><td>자료가 없습니다.</td></tr>
-		{% endif %}
+
 	</table>
+
 </body>
-<div class="pagination">
-    <span class="step-links">
-        {% if contacts.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ contacts.previous_page_number }}">previous</a>
-        {% endif %}
 
-        {% for i in p_range %}
-            <a href="?page={{i}}" {% if contacts.number == i %}class="active" {% endif %}>{{i}}</a>
-        {% endfor %}
-
-        {% if contacts.has_next %}
-            <a href="?page={{ contacts.next_page_number }}">next</a>
-            <a href="?page={{ contacts.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
-</div>
 </html>
