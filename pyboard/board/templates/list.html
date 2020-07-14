@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>게시판</title>
 </head>
 <body>
 <h2><a href="/">게시판</a></h2>
@@ -45,7 +45,7 @@
 게시물수 : {{ boardCount }}<br>
 	<a href="write">글쓰기</a>
 	<table border="1">
-		<tr>
+		<tr style="background-color: yellow">
 			<th>번호</th>
 			<th>이름</th>
 			<th>제목</th>
@@ -54,6 +54,7 @@
 			<th>첨부파일</th>
 			<th>다운로드</th>
 		</tr>
+		{% if boardList %}
 		{% for row in boardList %}
 		<tr align="center">
 			<td>{{row.idx}}</td>
@@ -67,8 +68,45 @@
 				{% endif %}
 			</td>
 			<td>{{row.down}}</td>
-		</tr>
 		{% endfor %}
+		</tr>
+		<tr>
+			<td align="center" colspan="15" >
+			{% if boardList.paginator.num_pages > 1 %}
+				<div>
+				{% if boardList.has_previous %}	
+					<a href="?page={{lists.previous_page_number}}">◀</a>
+				{% endif %}
+			
+				&nbsp;&nbsp;{{boardList.number}}/{{boardList.paginator.num_pages}}&nbsp;&nbsp;
+			
+				{% if boardList.has_next %}	
+					<a href="?page={{boardList.next_page_number}}">▶</a>
+				{% endif %}
+				</div>
+			{% endif %}
+			</td>
+		</tr>
+		{% else %}
+			<tr><td>자료가 없습니다.</td></tr>
+		{% endif %}
 	</table>
 </body>
+<div class="pagination">
+    <span class="step-links">
+        {% if contacts.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ contacts.previous_page_number }}">previous</a>
+        {% endif %}
+
+        {% for i in p_range %}
+            <a href="?page={{i}}" {% if contacts.number == i %}class="active" {% endif %}>{{i}}</a>
+        {% endfor %}
+
+        {% if contacts.has_next %}
+            <a href="?page={{ contacts.next_page_number }}">next</a>
+            <a href="?page={{ contacts.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 </html>
