@@ -14,7 +14,7 @@ from . import models
 from django.views.generic import ListView
 
 
-UPLOAD_DIR = "C:/upload/" # upload 폴더정보
+UPLOAD_DIR = "/Users/chaehyejin/Documents/bubblegit/bubbletest/pyboard/upload" # upload 폴더정보
 
 # Create your views here.
 
