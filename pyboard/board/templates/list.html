@@ -4,6 +4,16 @@
 <head>
 <meta charset="UTF-8">
 <title>게시판</title>
+<style>
+  table {
+    width: 70%;
+    border: 1px solid #444444;
+  }
+  th, td {
+    border: 1px solid #444444;
+    padding: 10px;
+  }
+</style>
 </head>
 <body>
 <h2><a href="/">게시판</a></h2>
@@ -76,8 +86,8 @@
 		  <div class="pagination">
   			<span class="step-links">
 			        {% if contacts.has_previous %}
-   			         <a href="?page=1">&laquo; first</a>
-    			         <a href="?page={{ contacts.previous_page_number }}">previous</a>
+   			         <a href="?page=1">&laquo; 처음</a>
+    			         <a href="?page={{ contacts.previous_page_number }}">이전</a>
   			        {% endif %}
 
       			        {% for i in p_range %}
@@ -85,8 +95,8 @@
        			        {% endfor %}
 
        			        {% if contacts.has_next %}
-            		        <a href="?page={{ contacts.next_page_number }}">next</a>
-        			        <a href="?page={{ contacts.paginator.num_pages }}">last &raquo;</a>
+            		        <a href="?page={{ contacts.next_page_number }}">다음</a>
+        			        <a href="?page={{ contacts.paginator.num_pages }}">끝 &raquo;</a>
       			        {% endif %}
  			   </span>
 	 	 </div>
